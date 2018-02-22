@@ -9,21 +9,22 @@ describe('App', () => {
 
   beforeEach(() => {
     wrapper = shallow(<App houseData={[]}
-                          setHouseData={jest.fn()} />)
+                          setHouseData={jest.fn()} />,
+                          { disableLifecycleMethods: true })
   })
 
   it('matches snapshot', () => {
     expect(wrapper).toMatchSnapshot();
   })
 
-  describe('getHouses', () => {
+  describe('componentDidMount', () => {
     it('calls firstApiCall', () => {
       apiCalls.firstApiCall = jest.fn().mockImplementation(() => {
         return [{ house: 'greyjoy'}]
       })
 
       expect(apiCalls.firstApiCall).not.toHaveBeenCalled();
-      wrapper.instance().getHouses();
+      wrapper.instance().componentDidMount();
       expect(apiCalls.firstApiCall).toHaveBeenCalled();
     })
 
@@ -34,7 +35,7 @@ describe('App', () => {
       const expected = [{"house": "greyjoy"}];
 
       expect(wrapper.instance().props.setHouseData).not.toHaveBeenCalled();
-      await wrapper.instance().getHouses();
+      await wrapper.instance().componentDidMount();
       expect(wrapper.instance().props.setHouseData).toHaveBeenCalledWith(expected);
     })
   })
