@@ -6,3 +6,14 @@ export const firstApiCall = async () => {
     throw new Error(error);
   }
 };
+
+export const getSwornMembers = async swornMembers => {
+  const membersPromises = swornMembers.map( async member => {
+    const initialFetch = await fetch(member, {
+      method: 'GET'
+    })
+    return await initialFetch.json();
+  })
+
+  return await Promise.all(membersPromises)
+}

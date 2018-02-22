@@ -5,7 +5,7 @@ import './App.css';
 import HouseCard from '../HouseCard/HouseCard';
 import { connect } from 'react-redux';
 import { setHouseData } from '../../actions';
-import { firstApiCall } from '../../helpers/apiCalls';
+import { firstApiCall, getSwornMembers } from '../../helpers/apiCalls';
 import wolfGif from '../../wolf.gif';
 
 export class App extends Component {
@@ -21,7 +21,9 @@ export class App extends Component {
   }
 
   cleanHouseData = houseData => {
-    return houseData.map( house => {
+    return houseData.map(async house => {
+      const swornMembers = await getSwornMembers(house.swornMembers);
+      console.log(swornMembers)
       house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
       house.seats = house.seats.join(', ') || 'none';
       house.titles = house.titles.join(', ') || 'none';
