@@ -83,6 +83,22 @@ describe('App', () => {
       await wrapper.instance().componentDidMount();
       expect(wrapper.instance().props.setHouseData).toHaveBeenCalledWith(expected);
     })
+
+    it('sets state with error message if something fails', async () => {
+      apiCalls.firstApiCall = jest.fn().mockImplementation(() => {
+        throw new Error('failed to fetch GOT facts!')
+      })
+      wrapper.instance().cleanHouseData = jest.fn().mockImplementation(() => {
+        return [{
+          "ancestralWeapons": "Ice, HeartsBane", 
+          "seats": "Riverrun, Winterfell", 
+          "titles": "Lord of the North"
+        }]
+      })
+      const expected = {"error": Error('failed to fetch GOT facts!')};
+      await wrapper.instance().componentDidMount();
+      expect(wrapper.instance().state).toEqual(expected);
+    })
   })
 
   describe('cleanHouseData', () => {
@@ -112,6 +128,20 @@ describe('App', () => {
       }]
       const returned = await wrapper.instance().cleanHouseData(dirtyData);
       expect(Promise.all(returned)).toEqual(cleanData);
+    })
+
+    it.skip('sets state with error message if something fails', async () => {
+      const dirtyData = [{
+        ancestralWeapons: ['Ice', 'HeartsBane'],
+        seats: ['Riverrun', 'Winterfell'],
+        titles: ['Lord of the North']
+      }]
+      apiCalls.getSwornMembers = jest.fn().mockImplementation(() => {
+        throw new Error('failed to fetch sworn members!')
+      })
+      const expected = {"error": Error('failed to fetch sworn members!')};
+      const returned = await wrapper.instance().cleanHouseData(dirtyData);
+      expect(wrapper.instance().state).toEqual(expected);
     })
   })
 
