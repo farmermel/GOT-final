@@ -108,8 +108,8 @@ describe('App', () => {
       })
     })
 
-    it('takes in house data and turns arrays into joined strings', async () => {
-      apiCalls.getSwornMembers = jest.fn().mockImplementation(() => {
+    it.skip('takes in house data and turns arrays into joined strings', async () => {
+      apiCalls.getSwornMembers = jest.fn().mockImplementation( () => {
         return 'string, of, people'
       })
 
