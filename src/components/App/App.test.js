@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { shallow } from 'enzyme';
 import { App, mapStateToProps, mapDispatchToProps } from './App';
@@ -28,11 +29,32 @@ describe('App', () => {
       expect(apiCalls.firstApiCall).toHaveBeenCalled();
     })
 
+    it('calls cleanHouseData', async () => {
+      wrapper.instance().cleanHouseData = jest.fn().mockImplementation(() => {
+        return [{
+          "ancestralWeapons": "Ice, HeartsBane", 
+          "seats": "Riverrun, Winterfell", 
+          "titles": "Lord of the North"
+        }]
+      })
+      expect(wrapper.instance().cleanHouseData).not.toHaveBeenCalled();
+      await wrapper.instance().componentDidMount();
+      expect(wrapper.instance().cleanHouseData).toHaveBeenCalled();
+
+    })
+
     it('calls setHouseData', async () => {
       apiCalls.firstApiCall = jest.fn().mockImplementation(() => {
         return [{ house: 'greyjoy'}]
       })
-      const expected = [{"house": "greyjoy"}];
+      wrapper.instance().cleanHouseData = jest.fn().mockImplementation(() => {
+        return [{
+          "ancestralWeapons": "Ice, HeartsBane", 
+          "seats": "Riverrun, Winterfell", 
+          "titles": "Lord of the North"
+        }]
+      })
+      const expected = [{"ancestralWeapons": "Ice, HeartsBane", "seats": "Riverrun, Winterfell", "titles": "Lord of the North"}];
 
       expect(wrapper.instance().props.setHouseData).not.toHaveBeenCalled();
       await wrapper.instance().componentDidMount();
@@ -42,17 +64,17 @@ describe('App', () => {
 
   describe('cleanHouseData', () => {
     it('takes in house data and turns arrays into joined strings', () => {
-      const dirtyData = {
+      const dirtyData = [{
         ancestralWeapons: ['Ice', 'HeartsBane'],
         seats: ['Riverrun', 'Winterfell'],
         titles: ['Lord of the North']
-      }
+      }]
 
-      const cleanData = {
+      const cleanData = [{
         "ancestralWeapons": "Ice, HeartsBane", 
         "seats": "Riverrun, Winterfell", 
         "titles": "Lord of the North"
-      }
+      }]
       expect(wrapper.instance().cleanHouseData(dirtyData)).toEqual(cleanData);
     })
   })

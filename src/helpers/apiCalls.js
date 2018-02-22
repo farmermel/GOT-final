@@ -5,4 +5,4 @@ export const firstApiCall = async () => {
   } catch (error) {
     throw new Error(error);
   }
-}
+};

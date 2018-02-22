@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { houseReducer } from './houseReducer';
 
 describe('houseReducer', () => {

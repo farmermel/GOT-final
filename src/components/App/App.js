@@ -10,31 +10,31 @@ import wolfGif from '../../wolf.gif';
 
 export class App extends Component {
   componentDidMount = async () => {
-  const { setHouseData } = this.props;
+    const { setHouseData } = this.props;
     try {
       const initialData = await firstApiCall();
       const cleanData = this.cleanHouseData(initialData);
-      setHouseData(initialData)
+      setHouseData(cleanData);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   cleanHouseData = houseData => {
-    houseData.map( house => {
-      house.ancestralWeapons = house.ancestralWeapons.join(', ');
-      house.seats = house.seats.join(', ');
-      house.titles = house.titles.join(', ');
+    return houseData.map( house => {
+      house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
+      house.seats = house.seats.join(', ') || 'none';
+      house.titles = house.titles.join(', ') || 'none';
       return house;
-    })
+    });
   }
 
   displayHouses = houseData => {
-    return houseData.map( (house, i) => {
+    return houseData.map( (house, index) => {
       return (
-       <HouseCard card={house} key={i} />
-      )
-    })
+        <HouseCard card={house} key={index} />
+      );
+    });
   }
 
   render() {
@@ -64,7 +64,7 @@ App.propTypes = {
 };
 
 export const mapStateToProps = ({ houseData }) => ({
- houseData 
+  houseData 
 });
 export const mapDispatchToProps = dispatch => ({ 
   setHouseData: houseData => dispatch(setHouseData(houseData))

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { setHouseData } from './index';
 
 describe('setHouseData', () => {
