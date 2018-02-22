@@ -18,6 +18,19 @@ describe('App', () => {
     expect(wrapper).toMatchSnapshot();
   })
 
+  it('matches snapshot when state has an error', () => {
+    wrapper.instance().setState({ error: 'Something failed'})
+    expect(wrapper.instance().state).toEqual({"error": "Something failed"});
+    expect(wrapper).toMatchSnapshot();
+  })
+
+  it('has default state', () => {
+    const expected = {
+      error: null
+    };
+    expect(wrapper.instance().state).toEqual(expected);
+  })
+
   describe('componentDidMount', () => {
     beforeAll(() => {
       wrapper.instance().cleanHouseData = jest.fn().mockImplementation(() => {
@@ -139,8 +152,17 @@ describe('App', () => {
       apiCalls.getSwornMembers = jest.fn().mockImplementation(() => {
         throw new Error('failed to fetch sworn members!')
       })
+      const catchError = async () => {
+        try {
+          await wrapper.instance().cleanHouseData(dirtyData);
+        } catch (error) {
+          return error
+        }
+
+      }
       const expected = {"error": Error('failed to fetch sworn members!')};
-      const returned = await wrapper.instance().cleanHouseData(dirtyData);
+      await catchError()
+      // await wrapper.instance().cleanHouseData(dirtyData);
       expect(wrapper.instance().state).toEqual(expected);
     })
   })
