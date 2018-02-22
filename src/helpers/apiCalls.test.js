@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { firstApiCall } from './apiCalls';
 
 describe('firstApiCall', () => {

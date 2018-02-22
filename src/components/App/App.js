@@ -1,34 +1,57 @@
 import React, { Component } from 'react';
-import PropTypes, { shape, func, string } from 'prop-types';
+import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './App.css';
+import HouseCard from '../HouseCard/HouseCard';
 import { connect } from 'react-redux';
 import { setHouseData } from '../../actions';
 import { firstApiCall } from '../../helpers/apiCalls';
+import wolfGif from '../../wolf.gif';
 
 export class App extends Component {
-  getHouses = async () => {
+  componentDidMount = async () => {
     const { setHouseData } = this.props;
     try {
       const initialData = await firstApiCall();
-      setHouseData(initialData)
+      const cleanData = this.cleanHouseData(initialData);
+      setHouseData(cleanData);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
+  cleanHouseData = houseData => {
+    return houseData.map( house => {
+      house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
+      house.seats = house.seats.join(', ') || 'none';
+      house.titles = house.titles.join(', ') || 'none';
+      return house;
+    });
+  }
+
+  displayHouses = houseData => {
+    return houseData.map( (house, index) => {
+      return (
+        <HouseCard card={house} key={index} />
+      );
+    });
+  }
+
   render() {
+    const { houseData } = this.props;
     return (
       <div className='App'>
         <div className='App-header'>
           <img src={logo} className='App-logo' alt='logo' />
           <h2>Welcome to Westeros</h2>
-          <button onClick={() => {
-            this.getHouses();
-            // alert(this.props.fake);
-          }}> Get Houses</button>
+
         </div>
         <div className='Display-info'>
+          {
+            houseData.length 
+              ? this.displayHouses(houseData)
+              : <div><img src={wolfGif} alt='loading' /></div>
+          }
         </div>
       </div>
     );
@@ -36,12 +59,12 @@ export class App extends Component {
 }
 
 App.propTypes = {
-  fake: shape({ fake: string }),
-  setHouseData: func.isRequired
+  houseData: PropTypes.arrayOf(PropTypes.object),
+  setHouseData: PropTypes.func.isRequired
 };
 
 export const mapStateToProps = ({ houseData }) => ({
- houseData 
+  houseData 
 });
 export const mapDispatchToProps = dispatch => ({ 
   setHouseData: houseData => dispatch(setHouseData(houseData))
