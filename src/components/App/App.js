@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './App.css';
+import HouseCard from '../HouseCard/HouseCard';
 import { connect } from 'react-redux';
 import { setHouseData } from '../../actions';
 import { firstApiCall } from '../../helpers/apiCalls';
@@ -12,38 +13,26 @@ export class App extends Component {
   const { setHouseData } = this.props;
     try {
       const initialData = await firstApiCall();
+      const cleanData = this.cleanHouseData(initialData);
       setHouseData(initialData)
     } catch (error) {
       console.log(error)
     }
   }
 
-  // getHouses = async () => {
-
-  // }
-
   cleanHouseData = houseData => {
-    const cleanHouseData = {...houseData};
-    cleanHouseData.ancestralWeapons = houseData.ancestralWeapons.join(', ');
-    cleanHouseData.seats = houseData.seats.join(', ');
-    cleanHouseData.titles = houseData.titles.join(', ');
-    return cleanHouseData;
+    houseData.map( house => {
+      house.ancestralWeapons = house.ancestralWeapons.join(', ');
+      house.seats = house.seats.join(', ');
+      house.titles = house.titles.join(', ');
+      return house;
+    })
   }
 
   displayHouses = houseData => {
     return houseData.map( (house, i) => {
-      const cleanHouse = this.cleanHouseData(house)
-      console.log(cleanHouse)
       return (
-        <div key={i}>
-          <h1>Name: {cleanHouse.name}</h1>
-          <p>founded: {cleanHouse.founded}</p>
-          <p>seats: {cleanHouse.seats}</p>
-          <p>titles: {cleanHouse.titles}</p>
-          <p>coat of arms: {cleanHouse.coatOfArms}</p>
-          <p>ancestral weapons: {cleanHouse.ancestralWeapons}</p>
-          <p>words: {cleanHouse.words}</p>
-        </div>
+       <HouseCard card={house} key={i} />
       )
     })
   }

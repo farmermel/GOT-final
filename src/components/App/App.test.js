@@ -40,6 +40,23 @@ describe('App', () => {
     })
   })
 
+  describe('cleanHouseData', () => {
+    it('takes in house data and turns arrays into joined strings', () => {
+      const dirtyData = {
+        ancestralWeapons: ['Ice', 'HeartsBane'],
+        seats: ['Riverrun', 'Winterfell'],
+        titles: ['Lord of the North']
+      }
+
+      const cleanData = {
+        "ancestralWeapons": "Ice, HeartsBane", 
+        "seats": "Riverrun, Winterfell", 
+        "titles": "Lord of the North"
+      }
+      expect(wrapper.instance().cleanHouseData(dirtyData)).toEqual(cleanData);
+    })
+  })
+
   describe('mapStateToProps', () => {
     it('maps state to props', () => {
       const mockState = {
