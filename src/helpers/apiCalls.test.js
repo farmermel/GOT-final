@@ -29,18 +29,18 @@ describe('apiCalls', () => {
     it('throws an error if status is not good', async () => {
         window.fetch = jest.fn().mockImplementation(() => {
           return Promise.reject({
-            status: 500
+            status: 500,
+            message: 'failed to fetch'
           })
         })
         const catchError = async () => {
           try {
-            const results = await firstApiCall();
+            await firstApiCall();
           } catch (error) {
-            return error;
+            return error
           }
         }
-
-        expect(await catchError()).toEqual(Error());
+        expect(await catchError()).toEqual({"message": "failed to fetch", "status": 500});
     })
   })
 
