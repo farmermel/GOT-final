@@ -31,16 +31,20 @@ export class App extends Component {
   }
 
   cleanHouseData = async houseData => {
-    const houseDupe = [...houseData];
-    return await houseDupe.map(async (house, index) => {
-      const cleanSwornMembers = await getSwornMembers(house.swornMembers);
-      house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
-      house.seats = house.seats.join(', ') || 'none';
-      house.titles = house.titles.join(', ') || 'none';
-      house.swornMembers = cleanSwornMembers;
-      house.id = index;
-      return house;
-    });
+    try {
+      const houseDupe = [...houseData];
+      return await houseDupe.map(async (house, index) => {
+        const cleanSwornMembers = await getSwornMembers(house.swornMembers);
+        house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
+        house.seats = house.seats.join(', ') || 'none';
+        house.titles = house.titles.join(', ') || 'none';
+        house.swornMembers = cleanSwornMembers;
+        house.id = index;
+        return house;
+      });
+    } catch (error) {
+      this.setState({ error });
+    }
   }
 
   displayHouses = houseData => {
