@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { App, mapStateToProps, mapDispatchToProps } from './App';
+import * as apiCalls from '../../helpers/apiCalls';
 
 
 describe('App', () => {
@@ -17,11 +18,24 @@ describe('App', () => {
 
   describe('getHouses', () => {
     it('calls firstApiCall', () => {
+      apiCalls.firstApiCall = jest.fn().mockImplementation(() => {
+        return [{ house: 'greyjoy'}]
+      })
 
+      expect(apiCalls.firstApiCall).not.toHaveBeenCalled();
+      wrapper.instance().getHouses();
+      expect(apiCalls.firstApiCall).toHaveBeenCalled();
     })
 
-    it('calls setHouseData', () => {
+    it('calls setHouseData', async () => {
+      apiCalls.firstApiCall = jest.fn().mockImplementation(() => {
+        return [{ house: 'greyjoy'}]
+      })
+      const expected = [{"house": "greyjoy"}];
 
+      expect(wrapper.instance().props.setHouseData).not.toHaveBeenCalled();
+      await wrapper.instance().getHouses();
+      expect(wrapper.instance().props.setHouseData).toHaveBeenCalledWith(expected);
     })
   })
 
@@ -37,6 +51,10 @@ describe('App', () => {
   })
 
   describe('mapDispatchToProps', () => {
+    const mockDispatch = jest.fn();
 
+    const mapped = mapDispatchToProps(mockDispatch);
+    mapped.setHouseData();
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
   })
 })
