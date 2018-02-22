@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import logo from './logo.svg';
+import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router';
 import { Link, withRouter } from 'react-router-dom';
-import './App.css';
-import HouseCard from '../HouseCard/HouseCard';
-import { connect } from 'react-redux';
-import { setHouseData } from '../../actions';
+import PropTypes from 'prop-types';
 import { firstApiCall, getSwornMembers } from '../../helpers/apiCalls';
+import { setHouseData } from '../../actions';
+import HouseCard from '../HouseCard/HouseCard';
+import logo from './logo.svg';
 import wolfGif from '../../wolf.gif';
+import './App.css';
 
 export class App extends Component {
   constructor() {
@@ -78,7 +78,7 @@ export class App extends Component {
             )} />
             <Route path='/house/:id' render={({ match }) => {
               const houseRender = houseData.find( house => {
-                return house.id === parseInt(match.params.id);
+                return house.id === parseInt(match.params.id, 10);
               });
               return houseData.length
                 ? <HouseCard card={houseRender} clicked={true} />
