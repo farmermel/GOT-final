@@ -19,7 +19,30 @@ describe('App', () => {
   })
 
   describe('componentDidMount', () => {
+    beforeAll(() => {
+      wrapper.instance().cleanHouseData = jest.fn().mockImplementation(() => {
+        return [{
+          "ancestralWeapons": "Ice, HeartsBane", 
+          "seats": "Riverrun, Winterfell", 
+          "titles": "Lord of the North"
+        }]
+      })
+      Promise.all = jest.fn().mockImplementation(() => {
+        return [{
+          "ancestralWeapons": "Ice, HeartsBane", 
+          "seats": "Riverrun, Winterfell", 
+          "titles": "Lord of the North"
+        }]
+      })
+    })
     it('calls firstApiCall', () => {
+      wrapper.instance().cleanHouseData = jest.fn().mockImplementation(() => {
+        return [{
+          "ancestralWeapons": "Ice, HeartsBane", 
+          "seats": "Riverrun, Winterfell", 
+          "titles": "Lord of the North"
+        }]
+      })
       apiCalls.firstApiCall = jest.fn().mockImplementation(() => {
         return [{ house: 'greyjoy'}]
       })
@@ -63,19 +86,32 @@ describe('App', () => {
   })
 
   describe('cleanHouseData', () => {
-    it('takes in house data and turns arrays into joined strings', () => {
+    beforeAll(() => {
+      apiCalls.getSwornMembers = jest.fn().mockImplementation(() => {
+        return 'string, of, people'
+      })
+    })
+
+    it('takes in house data and turns arrays into joined strings', async () => {
+      apiCalls.getSwornMembers = jest.fn().mockImplementation(() => {
+        return 'string, of, people'
+      })
+      
       const dirtyData = [{
         ancestralWeapons: ['Ice', 'HeartsBane'],
         seats: ['Riverrun', 'Winterfell'],
-        titles: ['Lord of the North']
+        titles: ['Lord of the North'],
+        id: '5'
       }]
 
       const cleanData = [{
-        "ancestralWeapons": "Ice, HeartsBane", 
-        "seats": "Riverrun, Winterfell", 
-        "titles": "Lord of the North"
+        ancestralWeapons: "Ice, HeartsBane", 
+        seats: "Riverrun, Winterfell", 
+        titles: "Lord of the North",
+        id: '5',
+        swornMembers: 'string, of, people'
       }]
-      expect(wrapper.instance().cleanHouseData(dirtyData)).toEqual(cleanData);
+      expect(await wrapper.instance().cleanHouseData(dirtyData)).toEqual(cleanData);
     })
   })
 
