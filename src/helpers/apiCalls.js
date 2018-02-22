@@ -8,12 +8,23 @@ export const firstApiCall = async () => {
 };
 
 export const getSwornMembers = async swornMembers => {
-  const membersPromises = swornMembers.map( async member => {
+  const membersPromises = await swornMembers.map( async member => {
     const initialFetch = await fetch(member, {
       method: 'GET'
     })
     return await initialFetch.json();
   })
 
-  return await Promise.all(membersPromises)
+  // return await Promise.all(membersPromises);
+
+  const swornMembersResolved = await Promise.all(membersPromises);
+  return cleanSwornMembers(swornMembersResolved);
+}
+
+const cleanSwornMembers = swornMembers => {
+  const memberNames = swornMembers.map( member => {
+    return member.name;
+  } )
+
+  return memberNames.join(', ');
 }

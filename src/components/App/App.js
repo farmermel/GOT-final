@@ -13,17 +13,20 @@ export class App extends Component {
     const { setHouseData } = this.props;
     try {
       const initialData = await firstApiCall();
-      const cleanData = this.cleanHouseData(initialData);
-      setHouseData(cleanData);
+      const cleanData = await this.cleanHouseData(initialData);
+      const usableData = await Promise.all(cleanData);
+      console.log('ud', usableData)
+      setHouseData(usableData);
     } catch (error) {
       console.log(error);
     }
   }
 
-  cleanHouseData = houseData => {
-    return houseData.map(async house => {
-      const swornMembers = await getSwornMembers(house.swornMembers);
-      console.log(swornMembers)
+  cleanHouseData = async houseData => {
+    const houseDupe = [...houseData]
+    return await houseDupe.map(async house => {
+      const cleanSwornMembers = await getSwornMembers(house.swornMembers);
+      house.swornMembers = cleanSwornMembers;
       house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
       house.seats = house.seats.join(', ') || 'none';
       house.titles = house.titles.join(', ') || 'none';
