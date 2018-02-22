@@ -26,13 +26,21 @@ describe('apiCalls', () => {
       expect(await firstApiCall()).toEqual(mockData);
     })
 
-    it.skip('throws an error if status is not good', async () => {
-        window.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-            status: 500,
-            json: () => {}
+    it('throws an error if status is not good', async () => {
+        window.fetch = jest.fn().mockImplementation(() => {
+          return Promise.reject({
+            status: 500
           })
-        )
-        expect(await firstApiCall()).toEqual(Error());
+        })
+        const catchError = async () => {
+          try {
+            const results = await firstApiCall();
+          } catch (error) {
+            return error;
+          }
+        }
+
+        expect(await catchError()).toEqual(Error());
     })
   })
 

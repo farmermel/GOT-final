@@ -96,22 +96,22 @@ describe('App', () => {
       apiCalls.getSwornMembers = jest.fn().mockImplementation(() => {
         return 'string, of, people'
       })
-      
+
       const dirtyData = [{
         ancestralWeapons: ['Ice', 'HeartsBane'],
         seats: ['Riverrun', 'Winterfell'],
-        titles: ['Lord of the North'],
-        id: '5'
+        titles: ['Lord of the North']
       }]
 
       const cleanData = [{
         ancestralWeapons: "Ice, HeartsBane", 
         seats: "Riverrun, Winterfell", 
         titles: "Lord of the North",
-        id: '5',
+        id: '0',
         swornMembers: 'string, of, people'
       }]
-      expect(await wrapper.instance().cleanHouseData(dirtyData)).toEqual(cleanData);
+      const returned = await wrapper.instance().cleanHouseData(dirtyData);
+      expect(Promise.all(returned)).toEqual(cleanData);
     })
   })
 

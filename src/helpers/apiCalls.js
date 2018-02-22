@@ -3,7 +3,7 @@ export const firstApiCall = async () => {
     const initialFetch = await fetch('http://localhost:3001/api/v1/houses');
     return initialFetch.json();
   } catch (error) {
-    throw new Error(error);
+    throw Error(error);
   }
 };
 
