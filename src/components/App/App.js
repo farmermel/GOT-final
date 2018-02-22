@@ -6,16 +6,7 @@ import { connect } from 'react-redux';
 import { setHouseData } from '../../actions';
 import { firstApiCall } from '../../helpers/apiCalls';
 
-class App extends Component {
-  // componentDidMount = async () => {
-  //   try {
-  //     const initialData = await firstApiCall();
-  //     setHouseData(initialData)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
+export class App extends Component {
   getHouses = async () => {
     const { setHouseData } = this.props;
     try {
@@ -49,10 +40,10 @@ App.propTypes = {
   setHouseData: func.isRequired
 };
 
-const mapStateToProps = ({ houseData }) => ({
+export const mapStateToProps = ({ houseData }) => ({
  houseData 
 });
-const mapDispatchToProps = dispatch => ({ 
+export const mapDispatchToProps = dispatch => ({ 
   setHouseData: houseData => dispatch(setHouseData(houseData))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);
