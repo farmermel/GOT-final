@@ -11,6 +11,13 @@ import { firstApiCall, getSwornMembers } from '../../helpers/apiCalls';
 import wolfGif from '../../wolf.gif';
 
 export class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      error: null
+    };
+  }
+
   componentDidMount = async () => {
     const { setHouseData } = this.props;
     try {
@@ -19,20 +26,19 @@ export class App extends Component {
       const usableData = await Promise.all(cleanData);
       setHouseData(usableData);
     } catch (error) {
-      console.log(error);
+      this.setState({ error });
     }
   }
 
   cleanHouseData = async houseData => {
-    const houseDupe = [...houseData]
+    const houseDupe = [...houseData];
     return await houseDupe.map(async (house, index) => {
       const cleanSwornMembers = await getSwornMembers(house.swornMembers);
-      console.log(cleanSwornMembers)
       house.swornMembers = cleanSwornMembers;
       house.ancestralWeapons = house.ancestralWeapons.join(', ') || 'none';
       house.seats = house.seats.join(', ') || 'none';
       house.titles = house.titles.join(', ') || 'none';
-      house.id = index
+      house.id = index;
       return house;
     });
   }
@@ -49,6 +55,9 @@ export class App extends Component {
     const { houseData } = this.props;
     return (
       <div className='App'>
+        {
+          this.state.error && <h3>Oops, something went wrong!</h3>
+        }
         <Link to={{pathname: '/'}}>
           <div className='App-header'>
             <img src={logo} className='App-logo' alt='logo' />
@@ -65,12 +74,12 @@ export class App extends Component {
             )} />
             <Route path='/house/:id' render={({ match }) => {
               const houseRender = houseData.find( house => {
-                return house.id === parseInt(match.params.id)
-              })
+                return house.id === parseInt(match.params.id);
+              });
               return houseData.length
-              ? <HouseCard card={houseRender} clicked={true} />
-              : <div><img src={wolfGif} alt='loading' /></div>
-              }} />
+                ? <HouseCard card={houseRender} clicked={true} />
+                : <div><img src={wolfGif} alt='loading' /></div>;
+            }} />
           </Switch>
         </div>
       </div>
