@@ -8,12 +8,12 @@ const HouseCard = ({ card, clicked }) => {
     <Link to={{pathname:`house/${card.id}`}}>
       <div className='house-card'>
         <h1>Name: {card.name}</h1>
-        <p>founded: {card.founded || 'no data available'}</p>
+        <h2>{card.words || ''}</h2>
+        <h3>Founded: {card.founded || 'N/A'}</h3>
         <p>seats: {card.seats}</p>
         <p>titles: {card.titles}</p>
         <p>coat of arms: {card.coatOfArms}</p>
         <p>ancestral weapons: {card.ancestralWeapons}</p>
-        <p>words: {card.words || 'no data available'}</p>
         {
           clicked && <p>sworn members: {card.swornMembers}</p>
         }
@@ -23,7 +23,15 @@ const HouseCard = ({ card, clicked }) => {
 };
 
 HouseCard.propTypes = {
-  card: PropTypes.objectOf(PropTypes.string),
+  card: PropTypes.shape({
+    name: PropTypes.string,
+    founded: PropTypes.string,
+    seats: PropTypes.string,
+    titles: PropTypes.string,
+    coatOfArms: PropTypes.string,
+    ancestralWeapons: PropTypes.string,
+    words: PropTypes.string
+  }),
   clicked: PropTypes.bool.isRequired
 };
 
