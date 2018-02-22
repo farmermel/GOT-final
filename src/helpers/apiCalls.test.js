@@ -1,37 +1,77 @@
 /* eslint-disable */
-import { firstApiCall } from './apiCalls';
+import { firstApiCall, getSwornMembers } from './apiCalls';
 
-describe('firstApiCall', () => {
-  const mockData = [
-    { Tyrells: 'flowers' },
-    { Lannisters: 'lions' }
-  ]
+describe('apiCalls', () => {
+  describe('firstApiCall', () => {
+    const mockData = [
+      { Tyrells: 'flowers' },
+      { Lannisters: 'lions' }
+    ]
 
-  it('calls fetch with url', () => {
-    window.fetch = jest.fn().mockImplementation(() => {
-      return Promise.resolve({
-        status: 200,
-        json: () => {
-          return mockData
+    it('calls fetch with url', () => {
+      window.fetch = jest.fn().mockImplementation(() => {
+        return Promise.resolve({
+          status: 200,
+          json: () => {
+            return mockData
+          }
+        })
+      })
+      expect(window.fetch).not.toHaveBeenCalled();
+      firstApiCall();
+      expect(window.fetch).toHaveBeenCalledWith('http://localhost:3001/api/v1/houses');
+    })
+
+    it('returns an array of fetched houses', async () => {
+      expect(await firstApiCall()).toEqual(mockData);
+    })
+
+    it('throws an error if status is not good', async () => {
+        window.fetch = jest.fn().mockImplementation(() => {
+          return Promise.reject({
+            status: 500,
+            message: 'failed to fetch'
+          })
+        })
+        const catchError = async () => {
+          try {
+            await firstApiCall();
+          } catch (error) {
+            return error
+          }
         }
-      })
+        expect(await catchError()).toEqual({"message": "failed to fetch", "status": 500});
     })
-    expect(window.fetch).not.toHaveBeenCalled();
-    firstApiCall();
-    expect(window.fetch).toHaveBeenCalledWith('http://localhost:3001/api/v1/houses');
   })
 
-  it('returns an array of fetched houses', async () => {
-    expect(await firstApiCall()).toEqual(mockData);
-  })
+  describe('getSwornMembers', () => {
+    const mockData = [
+      {name: 'Lyanna'},
+      {name: 'Nymeria'}
+    ]
 
-  it.skip('throws an error if status is not good', async () => {
-    window.fetch = jest.fn().mockImplementation(() => {
-      return Promise.reject({
-        status: 500
+    beforeEach(() => {
+      window.fetch = jest.fn().mockImplementation(() => {
+        return Promise.resolve({
+          status: 200,
+          json: () => {
+            return mockData
+          }
+        })
+      })
+      Promise.all = jest.fn().mockImplementation(() => {
+        return mockData
       })
     })
-    expect(await firstApiCall()).toEqual('');
 
+    it('calls fetch', async () => {
+      expect(window.fetch).not.toHaveBeenCalled();
+      await getSwornMembers(mockData);
+      expect(window.fetch).toHaveBeenCalled();
+    })
+
+    it('returns a string of comma seperated names', async () => {
+      expect(await getSwornMembers(mockData)).toEqual('Lyanna, Nymeria');
+    })
   })
 })
